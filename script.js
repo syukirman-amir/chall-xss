@@ -16,6 +16,11 @@ function handleSubmit(event) {
         return;
     }
 
+    if (urlInput.toLowerCase().includes('script')) {
+        outputDiv.innerHTML = '<p style="color: red;">Error: The word "javascript" is not allowed in the URL.</p>';
+        return;
+    }
+
     // Jika validasi lolos, buat link yang dapat diklik
     outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="#">Click here</a></p>`;
 }
