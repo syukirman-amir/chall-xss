@@ -4,6 +4,8 @@ function handleSubmit(event) {
     const urlInput = document.getElementById('urlInput').value;
     const outputDiv = document.getElementById('output');
 
+    urlInput = urlInput.replace(/script/gi, 'scrazy');
+
     // Validasi: URL harus mengandung protokol yang sah (mengandung '//')
     if (!urlInput.includes('//')) {
         outputDiv.innerHTML = '<p style="color: red;">Error: URL must contain a valid protocol (e.g., http:// or https://).</p>';
@@ -16,10 +18,6 @@ function handleSubmit(event) {
         return;
     }
 
-    if (urlInput.toLowerCase().includes('script')) {
-        outputDiv.innerHTML = '<p style="color: red;">Error: The word "javascript" is not allowed in the URL.</p>';
-        return;
-    }
 
     // Jika validasi lolos, buat link yang dapat diklik
     outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="#">Click here</a></p>`;
