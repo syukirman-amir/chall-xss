@@ -17,10 +17,11 @@ function handleSubmit(event) {
         return;
     }
 
-    // Ganti kata 'script' (case-insensitive) dengan 'scrazy' hanya pada URL
-    urlInput = urlInput.replace(/script/gi, 'scrazy');
-
-
+    // Cek apakah URL mengandung kata 'script' (case-insensitive)
+    if (urlInput.toLowerCase().includes('script')) {
+        // Ganti kata 'script' dengan 'scrazy' hanya jika ditemukan
+        urlInput = urlInput.replace(/script/gi, 'scrazy');
+    }
 
     // Jika validasi lolos, buat link yang dapat diklik
     outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="#">Click here</a></p>`;
