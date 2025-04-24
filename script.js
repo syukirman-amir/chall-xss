@@ -4,7 +4,6 @@ function handleSubmit(event) {
     const urlInput = document.getElementById('urlInput').value;
     const outputDiv = document.getElementById('output');
 
-    urlInput = urlInput.replace(/script/gi, 'scrazy');
 
     // Validasi: URL harus mengandung protokol yang sah (mengandung '//')
     if (!urlInput.includes('//')) {
@@ -17,6 +16,10 @@ function handleSubmit(event) {
         outputDiv.innerHTML = '<p style="color: red;">Error: The word "javascript" is not allowed in the URL.</p>';
         return;
     }
+
+    // Ganti kata 'script' (case-insensitive) dengan 'scrazy' hanya pada URL
+    urlInput = urlInput.replace(/script/gi, 'scrazy');
+
 
 
     // Jika validasi lolos, buat link yang dapat diklik
