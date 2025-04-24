@@ -17,5 +17,5 @@ function handleSubmit(event) {
     }
 
     // Jika validasi lolos, buat link yang dapat diklik
-    outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="_blank">Click here</a></p>`;
+    outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="#">Click here</a></p>`;
 }
