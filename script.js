@@ -1,7 +1,7 @@
 function handleSubmit(event) {
     event.preventDefault();
     
-    const urlInput = document.getElementById('urlInput').value;
+    let urlInput = document.getElementById('urlInput').value;
     const outputDiv = document.getElementById('output');
 
 
