@@ -17,6 +17,12 @@ function handleSubmit(event) {
         return;
     }
 
+    // Validasi: Blokir kata 'java' (case-sensitive) dalam input
+    if (urlInput.toLowerCase().includes('java')) {
+        outputDiv.innerHTML = '<p style="color: red;">Error: The word "java" is not allowed in the URL.</p>';
+        return;
+    }
+
     // Cek apakah URL mengandung kata 'script' (case-insensitive)
     if (urlInput.toLowerCase().includes('script')) {
         // Ganti kata 'script' dengan 'scrazy' hanya jika ditemukan
