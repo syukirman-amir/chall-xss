@@ -11,23 +11,6 @@ function handleSubmit(event) {
         return;
     }
 
-    // Validasi tambahan menggunakan objek URL untuk memastikan struktur
-    try {
-        new URL(urlInput);
-    } catch (error) {
-        outputDiv.innerHTML = '<p style="color: red;">Error: Invalid URL format.</p>';
-        return;
-    }
-
-    // Blokir kata 'javascript' (case-insensitive)
-    if (urlInput.toLowerCase().includes('javascript')) {
-        outputDiv.innerHTML = '<p style="color: red;">Error: The word "javascript" is not allowed in the URL.</p>';
-        return;
-    }
-
-    // Ganti kata 'script' dengan 'scrazy' (case-insensitive)
-    let modifiedUrl = urlInput.replace(/script/gi, 'scrazy');
-
     // Jika validasi lolos, buat link yang dapat diklik
-    outputDiv.innerHTML = `<p>Success! Your URL: <a href="${modifiedUrl}" target="_blank">Click here</a></p>`;
+    outputDiv.innerHTML = `<p>Success! Your URL: <a href="${urlInput}" target="_blank">Click here</a></p>`;
 }
