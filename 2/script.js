@@ -4,14 +4,14 @@ function handleSubmit(event) {
     const urlInput = document.getElementById('urlInput').value.trim();
     const outputDiv = document.getElementById('output');
 
-    // Validasi URL menggunakan regex
-    const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+    // Validasi URL dengan regex: protokol apa pun, diikuti ://, lalu domain
+    const urlPattern = /^[a-zA-Z0-9+.-]+:\/\/[^\s/$.?#].[^\s]*$/i;
     if (!urlPattern.test(urlInput)) {
-        outputDiv.innerHTML = '<p style="color: red;">Error: Please enter a valid URL (e.g., https://example.com).</p>';
+        outputDiv.innerHTML = '<p style="color: red;">Error: Please enter a valid URL with protocol (e.g., ftp://example.com).</p>';
         return;
     }
 
-    // Validasi tambahan menggunakan objek URL
+    // Validasi tambahan menggunakan objek URL untuk memastikan struktur
     try {
         new URL(urlInput);
     } catch (error) {
