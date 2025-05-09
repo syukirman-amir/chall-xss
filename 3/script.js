@@ -5,7 +5,7 @@ function handleSubmit(event) {
     const outputDiv = document.getElementById('output');
 
     // Validasi URL dengan regex: protokol apa pun, diikuti ://, lalu domain
-    const urlPattern = /^[a-zA-Z0-9+.-]+:\/\/[^\s%0A%0D/$.?#][^\s%0A%0D]*$/i;
+    const urlPattern = /^[a-zA-Z0-9+.-]+:\/\/[^\s/$.?#].[^\s]*$/i;
     if (!urlPattern.test(urlInput)) {
         outputDiv.innerHTML = '<p style="color: red;">Error: Please enter a valid URL with protocol (e.g., http://example.com).</p>';
         return;
