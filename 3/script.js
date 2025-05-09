@@ -11,12 +11,12 @@ function handleSubmit(event) {
         return;
     }
       // Validasi: Blokir kata '%0a' (case-sensitive) dalam input
-    if (urlInput.toLowerCase().includes('%0a') || urlInput.toLowerCase().includes('%250a'))  {
-        outputDiv.innerHTML = '<p style="color: red;">Error: URL contains invalid characters (newline or carriage return).</p>';
-        return;
-    }
+    //if (urlInput.toLowerCase().includes('%0a') || urlInput.toLowerCase().includes('%250a'))  {
+       // outputDiv.innerHTML = '<p style="color: red;">Error: URL contains invalid characters (newline or carriage return).</p>';
+       // return;
+    //}
         // Validasi: Blokir kata '%0d' (case-sensitive) dalam input
-    if (urlInput.toLowerCase().includes('%0d') || urlInput.toLowerCase().includes('%250a'))  {
+    if (urlInput.toLowerCase().includes('%0d') || urlInput.toLowerCase().includes('%250d'))  {
         outputDiv.innerHTML = '<p style="color: red;">Error: URL contains invalid characters (newline or carriage return).</p>';
         return;
     }
