@@ -11,7 +11,7 @@ function handleSubmit(event) {
         // Jika tidak ada data-type="link"
         const decodedInput = decodeURIComponent(htmlInput);
         if (!decodedInput.includes('data-type="link"')) {
-            outputDiv.innerHTML = '<p style="color:red;">Error: hanya bisa html untuk URL</p>';
+            outputDiv.innerHTML = '<p style="color:red;">Status: 500</p>';
             return;
         }
     }
