@@ -7,7 +7,7 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nYou can now advance to the next level.");
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -16,8 +16,8 @@ var originalConfirm = window.confirm;
 window.confirm = function(s) {
     parent.postMessage("confirm", "*");
     setTimeout(function() { 
-        return originalConfirm("You triggered a confirm dialog:\n\n" 
-            + s + "\n\nClick OK or Cancel to proceed.");
+        return originalConfirm("Congratulations, you executed an confirm:\n\n" 
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -26,8 +26,8 @@ var originalPrompt = window.prompt;
 window.prompt = function(s, defaultValue = "") {
     parent.postMessage("prompt", "*");
     setTimeout(function() { 
-        return originalPrompt("You triggered a prompt dialog:\n\n" 
-            + s + "\n\nEnter a value and click OK or Cancel.", defaultValue);
+        return originalPrompt("Congratulations, you executed an prompt:\n\n" 
+            + s + "\n\nClick OK..", defaultValue);
     }, 50);
 };
 
