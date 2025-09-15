@@ -40,8 +40,10 @@ function isValidURL(url) {
 function containsHTMLTags(value) {
     // Gunakan DOMParser untuk memeriksa apakah data-value mengandung tag HTML
     const parser = new DOMParser();
+    // Dekode value untuk memastikan tag HTML tidak di-encode
+    const decodedValue = decodeURIComponent(value);
     // Bungkus value dalam elemen div untuk memastikan parsing yang benar
-    const wrappedValue = `<div>${value}</div>`;
+    const wrappedValue = `<div>${decodedValue}</div>`;
     const doc = parser.parseFromString(wrappedValue, 'text/html');
     const elements = doc.body.firstChild.childNodes;
 
