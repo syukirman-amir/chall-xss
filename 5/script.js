@@ -1,30 +1,30 @@
 function handleSubmit(event) {
     event.preventDefault();
 
-    // Ambil nilai input URL dari formulir
-    const urlInput = document.getElementById('urlInput').value;
+    // Ambil input HTML dari textarea
+    const htmlInput = document.getElementById('htmlInput').value;
     const outputDiv = document.getElementById('output');
 
-    // Filter sederhana yang rentan
-    // Hanya memeriksa apakah data-type mengandung "link" (rentan terhadap %0a)
-    const dataType = urlInput.includes('javascript:') ? 'invalid' : 'link'; // Filter dasar untuk mencegah javascript:
+   
+    // Hanya memeriksa apakah input mengandung 'data-type="link"' 
+    if (!htmlInput.includes('data-type="link"')) {
+        // Jika tidak ada data-type="link"
+        const decodedInput = decodeURIComponent(htmlInput);
+        if (!decodedInput.includes('data-type="link"')) {
+            outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type="link" are allowed!</p>';
+            return;
+        }
+    }
 
-    // Buat elemen <a> dengan input pengguna
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('data-type', dataType);
-    linkElement.setAttribute('data-value', urlInput);
-    linkElement.textContent = 'example.com';
-    
-    // Tambahkan elemen ke output
-    outputDiv.innerHTML = ''; // Bersihkan output sebelumnya
-    outputDiv.appendChild(linkElement);
+    // Masukkan input HTML ke dalam output (rentan)
+    outputDiv.innerHTML = htmlInput;
 
-    // Proses data-value untuk menetapkan href (rentan)
-    const links = document.querySelectorAll('a[data-type*="link"]'); // Rentan karena menggunakan *= (contains)
+    // Proses semua elemen <a> dengan data-type yang mengandung "link"
+    const links = document.querySelectorAll('a[data-type*="link"]');
     links.forEach(link => {
         const url = link.getAttribute('data-value');
         if (url) {
-            link.setAttribute('href', url); // Tidak memeriksa protokol javascript:
+            link.setAttribute('href', url); 
         }
     });
 }
