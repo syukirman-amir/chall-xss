@@ -66,7 +66,7 @@ function handleSubmit(event) {
     // Dekode input untuk memeriksa konten
     const decodedInput = decodeURIComponent(htmlInput);
 
-    // Validasi: Hanya izinkan tag <a>
+    // Validasi: Hanya izinkan tag <a> tanpa tag HTML di dalamnya
     const parser = new DOMParser();
     const doc = parser.parseFromString(decodedInput, 'text/html');
     const elements = doc.body.childNodes;
@@ -74,8 +74,17 @@ function handleSubmit(event) {
 
     // Periksa setiap node di input
     elements.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() !== 'a') {
-            isValid = false; // Tolak jika ada tag selain <a>
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.tagName.toLowerCase() !== 'a') {
+                isValid = false; // Tolak jika ada tag selain <a>
+            } else {
+                // Periksa child nodes di dalam tag <a>
+                node.childNodes.forEach(child => {
+                    if (child.nodeType === Node.ELEMENT_NODE) {
+                        isValid = false; // Tolak jika ada tag HTML di dalam <a>
+                    }
+                });
+            }
         }
     });
 
