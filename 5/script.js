@@ -7,27 +7,27 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nYou can now advance to the next level.");
+            + s + "\n\nClick OK or Cancel to proceed.");
     }, 50);
 };
 
 // Override window.confirm
-var originalAlert = window.confirm;
-window.alert = function(s) {
-    parent.postMessage("success", "*");
+var originalConfirm = window.confirm;
+window.confirm = function(s) {
+    parent.postMessage("confirm", "*");
     setTimeout(function() { 
-        originalAlert("Congratulations, you executed an confirm:\n\n" 
-            + s + "\n\nYou can now advance to the next level.");
+        return originalConfirm("You triggered a confirm dialog:\n\n" 
+            + s + "\n\nClick OK or Cancel to proceed.");
     }, 50);
 };
 
 // Override window.prompt
-var originalAlert = window.prompt;
-window.alert = function(s) {
-    parent.postMessage("success", "*");
+var originalPrompt = window.prompt;
+window.prompt = function(s, defaultValue = "") {
+    parent.postMessage("prompt", "*");
     setTimeout(function() { 
-        originalAlert("Congratulations, you executed an prompt:\n\n" 
-            + s + "\n\nYou can now advance to the next level.");
+        return originalPrompt("You triggered a prompt dialog:\n\n" 
+            + s + "\n\nClick OK or Cancel to proceed.", defaultValue);
     }, 50);
 };
 
