@@ -7,7 +7,7 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nClick OK to proceed.");
+            + s + "\n\nYou can now advance to the next level.");
     }, 50);
 };
 
@@ -16,8 +16,8 @@ var originalConfirm = window.confirm;
 window.confirm = function(s) {
     parent.postMessage("confirm", "*");
     setTimeout(function() { 
-        return originalConfirm("Congratulations, you executed an confirm dialog:\n\n" 
-            + s + "\n\nClick OK to proceed.");
+        return originalConfirm("You triggered a confirm dialog:\n\n" 
+            + s + "\n\nClick OK or Cancel to proceed.");
     }, 50);
 };
 
@@ -26,8 +26,8 @@ var originalPrompt = window.prompt;
 window.prompt = function(s, defaultValue = "") {
     parent.postMessage("prompt", "*");
     setTimeout(function() { 
-        return originalPrompt("Congratulations, you executed an prompt dialog:\n\n" 
-            + s + "\n\nClick OK to proceed.", defaultValue);
+        return originalPrompt("You triggered a prompt dialog:\n\n" 
+            + s + "\n\nEnter a value and click OK or Cancel.", defaultValue);
     }, 50);
 };
 
@@ -38,13 +38,15 @@ function isValidURL(url) {
 }
 
 function containsHTMLTags(value) {
-    // Gunakan DOMParser untuk memeriksa 
+    // Gunakan DOMParser untuk memeriksa apakah data-value mengandung tag HTML
     const parser = new DOMParser();
-    const doc = parser.parseFromString(value, 'text/html');
-    const elements = doc.body.childNodes;
-    let hasTags = false;
+    // Bungkus value dalam elemen div untuk memastikan parsing yang benar
+    const wrappedValue = `<div>${value}</div>`;
+    const doc = parser.parseFromString(wrappedValue, 'text/html');
+    const elements = doc.body.firstChild.childNodes;
 
     // Periksa setiap node di data-value
+    let hasTags = false;
     elements.forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE) {
             hasTags = true; // Terdeteksi tag HTML
