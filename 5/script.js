@@ -55,7 +55,13 @@ function containsHTMLTags(value) {
         }
     });
 
-    return !isValid; // Kembalikan true jika ada tag HTML, false jika tidak
+    // Pemeriksaan tambahan: Jika data-value mengandung string yang menyerupai tag HTML
+    // (misalnya, ">" diikuti oleh tag), tolak meskipun DOMParser tidak mendeteksi elemen
+    if (decodedValue.includes('>') && decodedValue.includes('<')) {
+        isValid = false; // Terdeteksi pola yang menyerupai tag HTML
+    }
+
+    return !isValid; // Kembalikan true jika ada tag HTML atau pola berbahaya, false jika tidak
 }
 
 function handleSubmit(event) {
