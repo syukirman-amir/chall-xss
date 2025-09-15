@@ -81,7 +81,7 @@ function handleSubmit(event) {
                 // Periksa child nodes di dalam tag <a>
                 node.childNodes.forEach(child => {
                     if (child.nodeType === Node.ELEMENT_NODE) {
-                        isValid = false; // Tolak jika ada tag HTML di dalam <a>
+                        isValid = false; // Tolak jika ada tag HTML apa pun di dalam <a>
                     }
                 });
             }
