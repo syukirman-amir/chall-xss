@@ -32,15 +32,10 @@ window.prompt = function(s, defaultValue = "") {
 };
 
 function isValidURL(url) {
-    // Regex untuk memeriksa URL valid (http, https, ftp, dll.)
+    // Regex untuk memeriksa URL valid (http, https, ftp) dan harus dimulai dengan protokol
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-    return urlPattern.test(url);
-}
-
-function containsHTMLTags(value) {
-    // Periksa apakah data-value mengandung karakter < atau >
-    const decodedValue = decodeURIComponent(value);
-    return decodedValue.includes('<') || decodedValue.includes('>');
+    const decodedUrl = decodeURIComponent(url);
+    return urlPattern.test(decodedUrl);
 }
 
 function handleSubmit(event) {
@@ -91,9 +86,9 @@ function handleSubmit(event) {
     const links = tempDoc.querySelectorAll('a[data-type*="link"]');
     for (let link of links) {
         const url = link.getAttribute('data-value');
-        if (url && containsHTMLTags(url)) {
+        if (url && !isValidURL(url)) {
             outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
-            return; // Hentikan pemrosesan jika data-value mengandung < atau >
+            return; // Hentikan pemrosesan jika data-value bukan URL valid
         }
     }
 
