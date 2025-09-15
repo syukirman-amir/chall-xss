@@ -46,14 +46,14 @@ function containsHTMLTags(value) {
     const elements = doc.body.firstChild.childNodes;
 
     // Periksa setiap node di data-value
-    let hasTags = false;
+    let isValid = true;
     elements.forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE) {
-            hasTags = true; // Terdeteksi tag HTML
+            isValid = false; // Terdeteksi tag HTML
         }
     });
 
-    return hasTags;
+    return !isValid; // Kembalikan true jika ada tag HTML, false jika tidak
 }
 
 function handleSubmit(event) {
@@ -90,23 +90,25 @@ function handleSubmit(event) {
         return;
     }
 
+    // Validasi data-value untuk setiap link sebelum memasukkan ke output
+    const tempDoc = parser.parseFromString(decodedInput, 'text/html');
+    const links = tempDoc.querySelectorAll('a[data-type*="link"]');
+    for (let link of links) {
+        const url = link.getAttribute('data-value');
+        if (url && containsHTMLTags(url)) {
+            outputDiv.innerHTML = '<p style="color:red;">Error: tags not allowed in data-value!</p>';
+            return; // Hentikan pemrosesan jika data-value mengandung tag HTML
+        }
+    }
+
     // Masukkan input HTML ke dalam output
     outputDiv.innerHTML = htmlInput;
 
     // Proses semua elemen <a> dengan data-type yang mengandung "link"
-    const links = document.querySelectorAll('a[data-type*="link"]');
-    links.forEach(link => {
+    const outputLinks = document.querySelectorAll('a[data-type*="link"]');
+    outputLinks.forEach(link => {
         const dataType = link.getAttribute('data-type');
         const url = link.getAttribute('data-value');
-
-        // Validasi: Periksa apakah data-value mengandung tag HTML menggunakan DOMParser
-        if (url && containsHTMLTags(url)) {
-            link.removeAttribute('href'); // Nonaktifkan link
-            link.style.pointerEvents = 'none';
-            link.style.color = '#999';
-            link.style.cursor = 'not-allowed';
-            return; // Lewati pemrosesan lebih lanjut untuk link ini
-        }
 
         // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
         if (dataType !== 'link') {
