@@ -7,7 +7,7 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nYou can now advance to the next level.");
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -16,8 +16,8 @@ var originalConfirm = window.confirm;
 window.confirm = function(s) {
     parent.postMessage("confirm", "*");
     setTimeout(function() { 
-        return originalConfirm("You triggered a confirm dialog:\n\n" 
-            + s + "\n\nClick OK or Cancel to proceed.");
+        return originalConfirm("Congratulations, you executed an confirm:\n\n" 
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -26,8 +26,8 @@ var originalPrompt = window.prompt;
 window.prompt = function(s, defaultValue = "") {
     parent.postMessage("prompt", "*");
     setTimeout(function() { 
-        return originalPrompt("You triggered a prompt dialog:\n\n" 
-            + s + "\n\nEnter a value and click OK or Cancel.", defaultValue);
+        return originalPrompt("Congratulations, you executed an prompt:\n\n" 
+            + s + "\n\nclick OK.", defaultValue);
     }, 50);
 };
 
@@ -49,29 +49,29 @@ function handleSubmit(event) {
     // Dekode input untuk memeriksa konten
     const decodedInput = decodeURIComponent(htmlInput);
 
-    // Validasi data-value terlebih dahulu untuk efisiensi
+    // Validasi data-type dan data-value terlebih dahulu untuk efisiensi
     const parser = new DOMParser();
     const tempDoc = parser.parseFromString(decodedInput, 'text/html');
-    const links = tempDoc.querySelectorAll('a[data-type*="link"]');
+    const links = tempDoc.querySelectorAll('a[data-type]');
     for (let link of links) {
-        const url = link.getAttribute('data-value');
         const dataType = link.getAttribute('data-type');
+        const decodedDataType = decodeURIComponent(dataType || '');
+        // Hanya izinkan data-type="link" atau data-type="link%0a"
+        if (decodedDataType !== 'link' && decodedDataType !== 'link\n') {
+            outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
+            return;
+        }
+        const url = link.getAttribute('data-value');
         // Jika data-value ada, harus merupakan URL valid
         if (url && !isValidURL(url)) {
             outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
             return; // Hentikan pemrosesan jika data-value bukan URL valid
         }
         // Jika data-type="link" tapi data-value kosong, tolak
-        if (dataType === 'link' && !url) {
+        if (decodedDataType === 'link' && !url) {
             outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
             return; // Hentikan pemrosesan jika data-value kosong untuk data-type="link"
         }
-    }
-
-    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
-    if (!decodedInput.includes('data-type="link')) {
-        outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
-        return;
     }
 
     // Validasi struktur HTML: Hanya izinkan tag <a> tanpa tag HTML di dalamnya
@@ -111,15 +111,15 @@ function handleSubmit(event) {
     outputDiv.innerHTML = htmlInput;
 
     // Proses semua elemen <a> dengan data-type yang mengandung "link"
-    const outputLinks = document.querySelectorAll('a[data-type*="link"]');
+    const outputLinks = document.querySelectorAll('a[data-type]');
     outputLinks.forEach(link => {
-        const dataType = link.getAttribute('data-type');
+        const dataType = decodeURIComponent(link.getAttribute('data-type') || '');
         const url = link.getAttribute('data-value');
 
         // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
         if (dataType !== 'link') {
             if (url) {
-                link.setAttribute('href', url); // Aktifkan link tanpa validasi ketat
+                link.setAttribute('href', url); // Aktifkan link tanpa validasi ketat untuk data-type="link%0a"
                 link.style.pointerEvents = 'auto';
                 link.style.cursor = 'pointer';
             }
