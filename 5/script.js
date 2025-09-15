@@ -7,7 +7,7 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nClick OK.");
+            + s + "\n\nClick OK to proceed.");
     }, 50);
 };
 
@@ -17,7 +17,7 @@ window.confirm = function(s) {
     parent.postMessage("confirm", "*");
     setTimeout(function() { 
         return originalConfirm("Congratulations, you executed an confirm dialog:\n\n" 
-            + s + "\n\nClick OK.");
+            + s + "\n\nClick OK to proceed.");
     }, 50);
 };
 
@@ -27,7 +27,7 @@ window.prompt = function(s, defaultValue = "") {
     parent.postMessage("prompt", "*");
     setTimeout(function() { 
         return originalPrompt("Congratulations, you executed an prompt dialog:\n\n" 
-            + s + "\n\nClick OK.", defaultValue);
+            + s + "\n\nClick OK to proceed.", defaultValue);
     }, 50);
 };
 
@@ -38,9 +38,20 @@ function isValidURL(url) {
 }
 
 function containsHTMLTags(value) {
-    // Regex untuk mendeteksi tag HTML (misalnya, <script>, <img>, dll.)
-    const htmlTagPattern = /<[a-zA-Z][^>]*>/;
-    return htmlTagPattern.test(value);
+    // Gunakan DOMParser untuk memeriksa 
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(value, 'text/html');
+    const elements = doc.body.childNodes;
+    let hasTags = false;
+
+    // Periksa setiap node di data-value
+    elements.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            hasTags = true; // Terdeteksi tag HTML
+        }
+    });
+
+    return hasTags;
 }
 
 function handleSubmit(event) {
@@ -86,7 +97,7 @@ function handleSubmit(event) {
         const dataType = link.getAttribute('data-type');
         const url = link.getAttribute('data-value');
 
-        // Validasi: Periksa apakah data-value mengandung tag HTML
+        // Validasi: Periksa apakah data-value mengandung tag HTML menggunakan DOMParser
         if (url && containsHTMLTags(url)) {
             link.removeAttribute('href'); // Nonaktifkan link
             link.style.pointerEvents = 'none';
