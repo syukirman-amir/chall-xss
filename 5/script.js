@@ -96,7 +96,7 @@ function handleSubmit(event) {
     for (let link of links) {
         const url = link.getAttribute('data-value');
         if (url && containsHTMLTags(url)) {
-            outputDiv.innerHTML = '<p style="color:red;">Error: tags not allowed in data-value!</p>';
+            outputDiv.innerHTML = '<p style="color:red;">Error: tags not allowed!</p>';
             return; // Hentikan pemrosesan jika data-value mengandung tag HTML
         }
     }
