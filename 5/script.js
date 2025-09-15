@@ -11,6 +11,32 @@ window.alert = function(s) {
     }, 50);
 };
 
+// Override window.confirm
+var originalAlert = window.confirm;
+window.alert = function(s) {
+    parent.postMessage("success", "*");
+    setTimeout(function() { 
+        originalAlert("Congratulations, you executed an confirm:\n\n" 
+            + s + "\n\nYou can now advance to the next level.");
+    }, 50);
+};
+
+// Override window.prompt
+var originalAlert = window.prompt;
+window.alert = function(s) {
+    parent.postMessage("success", "*");
+    setTimeout(function() { 
+        originalAlert("Congratulations, you executed an prompt:\n\n" 
+            + s + "\n\nYou can now advance to the next level.");
+    }, 50);
+};
+
+function isValidURL(url) {
+    // Regex untuk memeriksa URL valid (http, https, ftp, dll.)
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlPattern.test(url);
+}
+
 function handleSubmit(event) {
     event.preventDefault();
 
@@ -18,26 +44,58 @@ function handleSubmit(event) {
     const htmlInput = document.getElementById('htmlInput').value;
     const outputDiv = document.getElementById('output');
 
-    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
+    // Dekode input untuk memeriksa konten
     const decodedInput = decodeURIComponent(htmlInput);
+
+    // Validasi: Hanya izinkan tag <a>
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(decodedInput, 'text/html');
+    const elements = doc.body.childNodes;
+    let isValid = true;
+
+    // Periksa setiap node di input
+    elements.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() !== 'a') {
+            isValid = false; // Tolak jika ada tag selain <a>
+        }
+    });
+
+    if (!isValid) {
+        outputDiv.innerHTML = '<p style="color:red;">Error: Only &lt;a&gt; tags are allowed!</p>';
+        return;
+    }
+
+    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
     if (!decodedInput.includes('data-type="link')) {
         outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
         return;
     }
 
-    // Masukkan input HTML ke dalam output 
+    // Masukkan input HTML ke dalam output
     outputDiv.innerHTML = htmlInput;
 
-    // Proses semua elemen <a> 
-  
+    // Proses semua elemen <a> dengan data-type yang mengandung "link"
     const links = document.querySelectorAll('a[data-type*="link"]');
     links.forEach(link => {
         const dataType = link.getAttribute('data-type');
-        if (dataType !== 'link') { 
-            const url = link.getAttribute('data-value');
+        const url = link.getAttribute('data-value');
+
+        // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
+        if (dataType !== 'link') {
             if (url) {
-                link.setAttribute('href', url); // hasil output
+                link.setAttribute('href', url); // Aktifkan link tanpa validasi ketat
+                link.style.pointerEvents = 'auto';
+                link.style.cursor = 'pointer';
             }
+        } else if (dataType === 'link' && url && isValidURL(url)) {
+            link.setAttribute('href', url); // Aktifkan link untuk URL valid
+            link.style.pointerEvents = 'auto';
+            link.style.cursor = 'pointer';
+        } else {
+            link.removeAttribute('href'); // Nonaktifkan link untuk payload XSS
+            link.style.pointerEvents = 'none';
+            link.style.color = '#999';
+            link.style.cursor = 'not-allowed';
         }
     });
 }
