@@ -5,26 +5,26 @@ function handleSubmit(event) {
     const htmlInput = document.getElementById('htmlInput').value;
     const outputDiv = document.getElementById('output');
 
-    // Filter sederhana yang rentan
-    // Hanya memeriksa apakah input mengandung 'data-type="link"' (rentan terhadap %0a)
-    if (!htmlInput.includes('data-type="link"')) {
-        // Jika tidak ada data-type="link", coba decode %0a untuk memeriksa bypass
-        const decodedInput = decodeURIComponent(htmlInput);
-        if (!decodedInput.includes('data-type="link"')) {
-            outputDiv.innerHTML = '<p style="color:red;">Error: 500</p>';
-            return;
-        }
+    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
+    const decodedInput = decodeURIComponent(htmlInput);
+    if (!decodedInput.includes('data-type="link')) {
+        outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
+        return;
     }
 
     // Masukkan input HTML ke dalam output (rentan)
     outputDiv.innerHTML = htmlInput;
 
     // Proses semua elemen <a> dengan data-type yang mengandung "link"
+    // Hanya proses jika data-type bukan "link" secara eksak
     const links = document.querySelectorAll('a[data-type*="link"]');
     links.forEach(link => {
-        const url = link.getAttribute('data-value');
-        if (url) {
-            link.setAttribute('href', url); // Rentan: menetapkan data-value ke href tanpa sanitasi
+        const dataType = link.getAttribute('data-type');
+        if (dataType !== 'link') { // Hanya proses jika data-type bukan "link" secara eksak
+            const url = link.getAttribute('data-value');
+            if (url) {
+                link.setAttribute('href', url); // Rentan: menetapkan data-value ke href tanpa sanitasi
+            }
         }
     });
 }
