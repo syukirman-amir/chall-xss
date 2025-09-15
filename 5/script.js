@@ -56,7 +56,7 @@ function handleSubmit(event) {
     for (let link of links) {
         const dataType = link.getAttribute('data-type');
         const decodedDataType = decodeURIComponent(dataType || '');
-        // Hanya izinkan data-type="link" atau data-type="link%0a"
+        
         if (decodedDataType !== 'link' && decodedDataType !== 'link\n') {
             outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
             return;
@@ -91,7 +91,7 @@ function handleSubmit(event) {
                         if (child.nodeType === Node.ELEMENT_NODE) {
                             isValid = false; // Tolak jika ada tag HTML apa pun di dalam <a>
                         }
-                        // Periksa child nodes lebih dalam (rekursif)
+                        // 
                         if (child.childNodes) {
                             checkChildNodes(child.childNodes);
                         }
@@ -116,10 +116,10 @@ function handleSubmit(event) {
         const dataType = decodeURIComponent(link.getAttribute('data-type') || '');
         const url = link.getAttribute('data-value');
 
-        // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
+        
         if (dataType !== 'link') {
             if (url) {
-                link.setAttribute('href', url); // Aktifkan link tanpa validasi ketat untuk data-type="link%0a"
+                link.setAttribute('href', url); 
                 link.style.pointerEvents = 'auto';
                 link.style.cursor = 'pointer';
             }
