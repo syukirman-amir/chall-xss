@@ -119,7 +119,7 @@ function handleSubmit(event) {
         // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
         if (dataType !== 'link') {
             if (url) {
-                link.setAttribute('href', url); // Aktifkan link tanpa validasi ketat untuk data-type="link%0a"
+                link.setAttribute('href', url); // 
                 link.style.pointerEvents = 'auto';
                 link.style.cursor = 'pointer';
             }
