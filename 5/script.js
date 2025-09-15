@@ -7,7 +7,7 @@ window.alert = function(s) {
     parent.postMessage("success", "*");
     setTimeout(function() { 
         originalAlert("Congratulations, you executed an alert:\n\n" 
-            + s + "\n\nClick OK or Cancel to proceed.");
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -16,8 +16,8 @@ var originalConfirm = window.confirm;
 window.confirm = function(s) {
     parent.postMessage("confirm", "*");
     setTimeout(function() { 
-        return originalConfirm("You triggered a confirm dialog:\n\n" 
-            + s + "\n\nClick OK or Cancel to proceed.");
+        return originalConfirm("Congratulations, you executed an confirm dialog:\n\n" 
+            + s + "\n\nClick OK.");
     }, 50);
 };
 
@@ -26,8 +26,8 @@ var originalPrompt = window.prompt;
 window.prompt = function(s, defaultValue = "") {
     parent.postMessage("prompt", "*");
     setTimeout(function() { 
-        return originalPrompt("You triggered a prompt dialog:\n\n" 
-            + s + "\n\nClick OK or Cancel to proceed.", defaultValue);
+        return originalPrompt("Congratulations, you executed an prompt dialog:\n\n" 
+            + s + "\n\nClick OK.", defaultValue);
     }, 50);
 };
 
@@ -35,6 +35,12 @@ function isValidURL(url) {
     // Regex untuk memeriksa URL valid (http, https, ftp, dll.)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(url);
+}
+
+function containsHTMLTags(value) {
+    // Regex untuk mendeteksi tag HTML (misalnya, <script>, <img>, dll.)
+    const htmlTagPattern = /<[a-zA-Z][^>]*>/;
+    return htmlTagPattern.test(value);
 }
 
 function handleSubmit(event) {
@@ -79,6 +85,15 @@ function handleSubmit(event) {
     links.forEach(link => {
         const dataType = link.getAttribute('data-type');
         const url = link.getAttribute('data-value');
+
+        // Validasi: Periksa apakah data-value mengandung tag HTML
+        if (url && containsHTMLTags(url)) {
+            link.removeAttribute('href'); // Nonaktifkan link
+            link.style.pointerEvents = 'none';
+            link.style.color = '#999';
+            link.style.cursor = 'not-allowed';
+            return; // Lewati pemrosesan lebih lanjut untuk link ini
+        }
 
         // Hanya proses jika data-type bukan "link" secara eksak atau jika URL valid
         if (dataType !== 'link') {
