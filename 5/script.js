@@ -60,12 +60,19 @@ function handleSubmit(event) {
             if (node.tagName.toLowerCase() !== 'a') {
                 isValid = false; // Tolak jika ada tag selain <a>
             } else {
-                // Periksa child nodes di dalam tag <a>
-                node.childNodes.forEach(child => {
-                    if (child.nodeType === Node.ELEMENT_NODE) {
-                        isValid = false; // Tolak jika ada tag HTML apa pun di dalam <a>
-                    }
-                });
+                // Periksa child nodes di dalam tag <a> secara rekursif
+                const checkChildNodes = (nodes) => {
+                    nodes.forEach(child => {
+                        if (child.nodeType === Node.ELEMENT_NODE) {
+                            isValid = false; // Tolak jika ada tag HTML apa pun di dalam <a>
+                        }
+                        // Periksa child nodes lebih dalam (rekursif)
+                        if (child.childNodes) {
+                            checkChildNodes(child.childNodes);
+                        }
+                    });
+                };
+                checkChildNodes(node.childNodes);
             }
         }
     });
