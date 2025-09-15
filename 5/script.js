@@ -5,13 +5,13 @@ function handleSubmit(event) {
     const htmlInput = document.getElementById('htmlInput').value;
     const outputDiv = document.getElementById('output');
 
-   
-    // Hanya memeriksa apakah input mengandung 'data-type="link"' 
+    // Filter sederhana yang rentan
+    // Hanya memeriksa apakah input mengandung 'data-type="link"' (rentan terhadap %0a)
     if (!htmlInput.includes('data-type="link"')) {
-        // Jika tidak ada data-type="link"
+        // Jika tidak ada data-type="link", coba decode %0a untuk memeriksa bypass
         const decodedInput = decodeURIComponent(htmlInput);
         if (!decodedInput.includes('data-type="link"')) {
-            outputDiv.innerHTML = '<p style="color:red;">Status: 500</p>';
+            outputDiv.innerHTML = '<p style="color:red;">Error: 500</p>';
             return;
         }
     }
@@ -24,7 +24,7 @@ function handleSubmit(event) {
     links.forEach(link => {
         const url = link.getAttribute('data-value');
         if (url) {
-            link.setAttribute('href', url); 
+            link.setAttribute('href', url); // Rentan: menetapkan data-value ke href tanpa sanitasi
         }
     });
 }
