@@ -32,10 +32,11 @@ window.prompt = function(s, defaultValue = "") {
 };
 
 function isValidURL(url) {
-    // Regex untuk memeriksa URL valid (http, https, ftp) dan harus dimulai dengan protokol
-    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-    const decodedUrl = decodeURIComponent(url);
-    return urlPattern.test(decodedUrl);
+    // Regex untuk memeriksa URL valid (hanya http, https, ftp) dengan struktur ketat
+    const urlPattern = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+)(:[0-9]+)?([/a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=-]*)?$/i;
+    const decodedUrl = decodeURIComponent(url || '');
+    // Hanya izinkan URL yang sesuai dengan pola, tidak kosong, dan tidak mengandung <, >, atau "
+    return decodedUrl && urlPattern.test(decodedUrl) && !/[<>"]/.test(decodedUrl);
 }
 
 function handleSubmit(event) {
@@ -48,8 +49,32 @@ function handleSubmit(event) {
     // Dekode input untuk memeriksa konten
     const decodedInput = decodeURIComponent(htmlInput);
 
-    // Validasi: Hanya izinkan tag <a> tanpa tag HTML di dalamnya
+    // Validasi data-value terlebih dahulu untuk efisiensi
     const parser = new DOMParser();
+    const tempDoc = parser.parseFromString(decodedInput, 'text/html');
+    const links = tempDoc.querySelectorAll('a[data-type*="link"]');
+    for (let link of links) {
+        const url = link.getAttribute('data-value');
+        const dataType = link.getAttribute('data-type');
+        // Jika data-value ada, harus merupakan URL valid
+        if (url && !isValidURL(url)) {
+            outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
+            return; // Hentikan pemrosesan jika data-value bukan URL valid
+        }
+        // Jika data-type="link" tapi data-value kosong, tolak
+        if (dataType === 'link' && !url) {
+            outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
+            return; // Hentikan pemrosesan jika data-value kosong untuk data-type="link"
+        }
+    }
+
+    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
+    if (!decodedInput.includes('data-type="link')) {
+        outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
+        return;
+    }
+
+    // Validasi struktur HTML: Hanya izinkan tag <a> tanpa tag HTML di dalamnya
     const doc = parser.parseFromString(decodedInput, 'text/html');
     const elements = doc.body.childNodes;
     let isValid = true;
@@ -80,23 +105,6 @@ function handleSubmit(event) {
     if (!isValid) {
         outputDiv.innerHTML = '<p style="color:red;">Error: Only &lt;a&gt; tags are allowed!</p>';
         return;
-    }
-
-    // Filter yang rentan: hanya memeriksa keberadaan 'link' dalam data-type
-    if (!decodedInput.includes('data-type="link')) {
-        outputDiv.innerHTML = '<p style="color:red;">Error: Only links with data-type containing \'link\' are allowed!</p>';
-        return;
-    }
-
-    // Validasi data-value untuk setiap link sebelum memasukkan ke output
-    const tempDoc = parser.parseFromString(decodedInput, 'text/html');
-    const links = tempDoc.querySelectorAll('a[data-type*="link"]');
-    for (let link of links) {
-        const url = link.getAttribute('data-value');
-        if (url && !isValidURL(url)) {
-            outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
-            return; // Hentikan pemrosesan jika data-value bukan URL valid
-        }
     }
 
     // Masukkan input HTML ke dalam output
