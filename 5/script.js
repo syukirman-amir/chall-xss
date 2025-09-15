@@ -38,30 +38,9 @@ function isValidURL(url) {
 }
 
 function containsHTMLTags(value) {
-    // Gunakan DOMParser untuk memeriksa apakah data-value mengandung tag HTML
-    const parser = new DOMParser();
-    // Dekode value untuk memastikan tag HTML tidak di-encode
+    // Periksa apakah data-value mengandung karakter < atau >
     const decodedValue = decodeURIComponent(value);
-    // Bungkus value dalam elemen div untuk memastikan parsing yang benar
-    const wrappedValue = `<div>${decodedValue}</div>`;
-    const doc = parser.parseFromString(wrappedValue, 'text/html');
-    const elements = doc.body.firstChild.childNodes;
-
-    // Periksa setiap node di data-value
-    let isValid = true;
-    elements.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            isValid = false; // Terdeteksi tag HTML
-        }
-    });
-
-    // Pemeriksaan tambahan: Jika data-value mengandung string yang menyerupai tag HTML
-    // (misalnya, ">" diikuti oleh tag), tolak meskipun DOMParser tidak mendeteksi elemen
-    if (decodedValue.includes('>') && decodedValue.includes('<')) {
-        isValid = false; // Terdeteksi pola yang menyerupai tag HTML
-    }
-
-    return !isValid; // Kembalikan true jika ada tag HTML atau pola berbahaya, false jika tidak
+    return decodedValue.includes('<') || decodedValue.includes('>');
 }
 
 function handleSubmit(event) {
@@ -113,8 +92,8 @@ function handleSubmit(event) {
     for (let link of links) {
         const url = link.getAttribute('data-value');
         if (url && containsHTMLTags(url)) {
-            outputDiv.innerHTML = '<p style="color:red;">Error: tags not allowed!</p>';
-            return; // Hentikan pemrosesan jika data-value mengandung tag HTML
+            outputDiv.innerHTML = '<p style="color:red;">Error: url invalid!</p>';
+            return; // Hentikan pemrosesan jika data-value mengandung < atau >
         }
     }
 
