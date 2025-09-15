@@ -1,3 +1,16 @@
+// Kirim URL jendela saat ini ke parent window
+parent.postMessage(window.location.toString(), "*");
+
+// Override window.alert
+var originalAlert = window.alert;
+window.alert = function(s) {
+    parent.postMessage("success", "*");
+    setTimeout(function() { 
+        originalAlert("Congratulations, you executed an alert:\n\n" 
+            + s + "\n\nYou can now advance to the next level.");
+    }, 50);
+};
+
 function handleSubmit(event) {
     event.preventDefault();
 
@@ -12,18 +25,18 @@ function handleSubmit(event) {
         return;
     }
 
-    // Masukkan input HTML ke dalam output (rentan)
+    // Masukkan input HTML ke dalam output 
     outputDiv.innerHTML = htmlInput;
 
-    // Proses semua elemen <a> dengan data-type yang mengandung "link"
-    // Hanya proses jika data-type bukan "link" secara eksak
+    // Proses semua elemen <a> 
+  
     const links = document.querySelectorAll('a[data-type*="link"]');
     links.forEach(link => {
         const dataType = link.getAttribute('data-type');
-        if (dataType !== 'link') { // Hanya proses jika data-type bukan "link" secara eksak
+        if (dataType !== 'link') { 
             const url = link.getAttribute('data-value');
             if (url) {
-                link.setAttribute('href', url); // Rentan: menetapkan data-value ke href tanpa sanitasi
+                link.setAttribute('href', url); // hasil output
             }
         }
     });
